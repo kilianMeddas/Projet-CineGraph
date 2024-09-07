@@ -2,17 +2,13 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 import pandas as pd
-import requests
 import seaborn as sns
-import secrets
 import streamlit as st
 import warnings
 
 from matplotlib.patches import Patch
-from numpy.linalg import norm
 from sklearn.impute import KNNImputer
 from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.model_selection import train_test_split
 
 # Supprime les messages d'informations (pas des erreurs, juste avertissement)
 warnings.filterwarnings("ignore")
@@ -83,7 +79,7 @@ def get_top_genres(user_id, data):
 def display_recommendations(recommendations):
     list_movie = []
     for i, row in enumerate(recommendations.itertuples(), start=1):
-        list_movie.append(f"{i}) *{row.title}*\n\n ({', '.join(row.genres)}) \n**{row.recommendation_percentage:.2f}%**")
+        list_movie.append(f"{i}) *{row.title}*\n\n ({', '.join(row.genres)})\n **{row.recommendation_percentage:.2f}%**")
     return list_movie
 
 
@@ -134,26 +130,8 @@ if st.session_state.user:
     st.write(f"Nombres de films vus jusqu'à maintenant : {st.session_state.filter_user['title'].count()}")
     st.bar_chart(data=st.session_state.style_the_more_see)
 
-    # Appliquer KNN pour compléter les notes manquantes et générer des recommandations
-    st.session_state.imputer = KNNImputer(n_neighbors=20)
-    st.session_state.df_matrix_imputed = st.session_state.imputer.fit_transform(st.session_state.df_matrix)
-
-    st.session_state.df_matrix_imputed = pd.DataFrame(
-        st.session_state.df_matrix_imputed, 
-        index=st.session_state.df_matrix.index, 
-        columns=st.session_state.df_matrix.columns
-    )
-
-    # Calcul de la similarité des films
-    st.session_state.movie_similarity = cosine_similarity(st.session_state.df_matrix_imputed.T)
-    st.session_state.movie_similarity_df = pd.DataFrame(
-        st.session_state.movie_similarity,
-        index=st.session_state.df_matrix.columns,
-        columns=st.session_state.df_matrix.columns
-    )
-
     # Calcul des genres préférés et des recommandations basées sur les genres
-    top_genres_user1 = get_top_genres(st.session_state.user, st.session_state.merged_df)
+    get_top_genres(st.session_state.user, st.session_state.merged_df)
     recommended_movies_user_with_percentage = recommend_movies_with_percentage(st.session_state.user, st.session_state.merged_df)
 
     # Affichage des recommandations
