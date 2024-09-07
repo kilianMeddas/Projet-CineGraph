@@ -10,4 +10,4 @@ Collaborateurs :
 - Nathan Prigent
 
 
-Vous trouverez, un notebook, un script (interface) et le PDF du projet 
+Vous trouverez, un notebook, un script (interface), le PDF du projet ainsi qu'un requirement avec tous les modules utilisés
